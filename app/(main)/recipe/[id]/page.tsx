@@ -5,6 +5,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Clock, Users, Heart, Share2, Bookmark, Utensils, Printer } from 'lucide-react'
 import { getRecipeByid } from '@/actions/recipe-actions'
 import { notFound } from 'next/navigation'
+import { LikeButton } from '@/components/recipe/like-button'
+import { getLikesCount, isLikedByUser } from '@/actions/like-actions'
+import { getUser } from '@/actions/auth-actions'
 
 export default async function RecipeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -14,6 +17,10 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
   if (!recipe) {
     notFound()
   }
+
+  const likesCount = await getLikesCount(id)
+  const isLiked = await isLikedByUser(id)
+  const user = await getUser()
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 md:py-12">
@@ -31,9 +38,7 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
 
           {/* Action Buttons on Image */}
           <div className="absolute top-6 right-6 flex gap-2">
-            <Button variant="secondary" size="icon" className="rounded-full bg-white/90 backdrop-blur-sm hover:bg-white transition-all hover:scale-110">
-              <Heart className="h-5 w-5 text-rose-500" />
-            </Button>
+            <LikeButton recipeId={id} initialLikes={likesCount} initialIsLiked={isLiked} isAuthenticated={!!user} />
             <Button variant="secondary" size="icon" className="rounded-full bg-white/90 backdrop-blur-sm hover:bg-white transition-all hover:scale-110">
               <Share2 className="h-5 w-5" />
             </Button>

@@ -80,7 +80,8 @@ export async function getRecipes() {
         username,
         full_name,
         avatar_url
-      )
+      ),
+      likes(count)
     `).order('created_at', { ascending: false })
   if (error) {
     console.error('Error fetching recipes:', error)
@@ -101,7 +102,8 @@ export async function getRecipeByid(id: string) {
         bio
       ),
       ingredients(*),
-      instructions(*)
+      instructions(*),
+      likes(count)
     `).eq('id', id).single()
 
   if (error) {
