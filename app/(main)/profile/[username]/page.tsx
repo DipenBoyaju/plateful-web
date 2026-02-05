@@ -7,6 +7,7 @@ import { getUser } from '@/actions/auth-actions'
 import { RecipeCard } from '@/components/recipe/recipe-card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { Share2, Utensils } from 'lucide-react'
 
 export default async function ProfilePage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params
@@ -64,97 +65,134 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
   const userIsFollowing = user && !isOwnProfile ? await isFollowing(profile.id) : false
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Profile Header */}
-      <div className="bg-white rounded-3xl shadow-lg p-8 mb-8">
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-          {/* Avatar */}
-          <Avatar className="w-32 h-32 border-4 border-white shadow-xl">
-            <AvatarImage src={profile.avatar_url} alt={profile.username} />
-            <AvatarFallback className="text-4xl">
-              {profile.username[0].toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+    <div className="max-w-6xl mx-auto px-4 py-12 md:py-20">
+      {/* PROFILE HEADER - Modernized */}
+      <div className="relative mb-16 pb-12 border-b border-slate-100">
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-10">
 
-          {/* Profile Info */}
-          <div className="flex-1">
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+          {/* Avatar with Ring/Shadow effect */}
+          <div className="relative">
+            <Avatar className="w-40 h-40 border-[6px] border-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] ring-1 ring-slate-100">
+              <AvatarImage src={profile.avatar_url} alt={profile.username} className="object-cover" />
+              <AvatarFallback className="text-5xl font-black bg-orange-50 text-orange-600">
+                {profile.username[0].toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            {isOwnProfile && (
+              <div className="absolute bottom-2 right-2 h-8 w-8 bg-slate-900 rounded-full border-4 border-white flex items-center justify-center text-white cursor-pointer hover:bg-orange-600 transition-colors">
+                <span className="text-[10px] font-bold">+</span>
+              </div>
+            )}
+          </div>
+
+          {/* Profile Details */}
+          <div className="flex-1 text-center md:text-left space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-slate-900">{profile.username}</h1>
+                <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-1">
+                  {profile.username}
+                </h1>
                 {profile.full_name && (
-                  <p className="text-slate-600 text-lg">{profile.full_name}</p>
+                  <p className="text-xl font-medium text-slate-500">{profile.full_name}</p>
                 )}
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-4 md:mt-0">
+              <div className="flex items-center justify-center md:justify-start gap-3">
                 {isOwnProfile ? (
                   <Link href="/profile/edit">
-                    <Button variant="outline">Edit Profile</Button>
+                    <Button variant="outline" className="rounded-xl px-6 font-bold border-slate-200 hover:bg-slate-50 transition-all">
+                      Edit Profile
+                    </Button>
                   </Link>
                 ) : user ? (
                   <FollowButton
                     userId={profile.id}
                     initialIsFollowing={userIsFollowing}
                     isAuthenticated={!!user}
+                    className="rounded-xl px-8 shadow-lg shadow-orange-200"
                   />
                 ) : (
                   <Link href="/login">
-                    <Button>Follow</Button>
+                    <Button className="rounded-xl px-8 bg-slate-900 hover:bg-orange-600 shadow-lg transition-all">
+                      Follow
+                    </Button>
                   </Link>
                 )}
+                <Button variant="ghost" size="icon" className="rounded-xl border border-slate-100">
+                  <Share2 className="h-4 w-4" />
+                </Button>
               </div>
             </div>
 
-            {/* Stats */}
-            <div className="flex gap-8 mb-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-slate-900">{recipesWithLikes.length}</p>
-                <p className="text-sm text-slate-500">Recipes</p>
+            {/* Stats Bar - Minimalist */}
+            <div className="flex justify-center md:justify-start items-center gap-12 py-2">
+              <div className="group cursor-default">
+                <p className="text-2xl font-black text-slate-900 leading-none">{recipesWithLikes.length}</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Recipes</p>
               </div>
-              <div className="text-center cursor-pointer hover:opacity-70 transition-opacity">
-                <p className="text-2xl font-bold text-slate-900">{followersCount}</p>
-                <p className="text-sm text-slate-500">Followers</p>
+              <div className="group cursor-pointer">
+                <p className="text-2xl font-black text-slate-900 leading-none group-hover:text-orange-600 transition-colors">{followersCount}</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Followers</p>
               </div>
-              <div className="text-center cursor-pointer hover:opacity-70 transition-opacity">
-                <p className="text-2xl font-bold text-slate-900">{followingCount}</p>
-                <p className="text-sm text-slate-500">Following</p>
+              <div className="group cursor-pointer">
+                <p className="text-2xl font-black text-slate-900 leading-none group-hover:text-orange-600 transition-colors">{followingCount}</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Following</p>
               </div>
             </div>
 
-            {/* Bio */}
+            {/* Bio with subtle styling */}
             {profile.bio && (
-              <p className="text-slate-700 leading-relaxed">{profile.bio}</p>
+              <div className="max-w-2xl">
+                <p className="text-slate-600 leading-relaxed text-lg font-medium opacity-90">
+                  {profile.bio}
+                </p>
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Recipes Section */}
-      <div>
-        <h2 className="text-2xl font-bold mb-6">
-          {isOwnProfile ? 'Your Recipes' : `${profile.username}'s Recipes`}
-        </h2>
+      {/* RECIPES GRID SECTION */}
+      <section>
+        <div className="flex items-center justify-between mb-10">
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight">
+            {isOwnProfile ? 'Your Kitchen' : `${profile.username}'s Creations`}
+          </h2>
+          <div className="h-px flex-1 mx-8 bg-slate-100 hidden md:block" />
+          <div className="flex gap-2">
+            {/* Potential filter buttons for modern UI */}
+            <Button variant="ghost" size="sm" className="font-bold text-orange-600">Latest</Button>
+            <Button variant="ghost" size="sm" className="font-bold text-slate-400 hover:text-slate-600">Popular</Button>
+          </div>
+        </div>
 
         {recipesWithLikes.length === 0 ? (
-          <div className="text-center py-16 bg-slate-50 rounded-2xl">
-            <p className="text-slate-500 text-lg mb-4">
-              {isOwnProfile ? "You haven't posted any recipes yet" : "No recipes yet"}
+          <div className="text-center py-24 bg-slate-50/50 border-2 border-dashed border-slate-100 rounded-[2.5rem]">
+            <div className="bg-white w-20 h-20 rounded-3xl shadow-sm flex items-center justify-center mx-auto mb-6">
+              <Utensils className="h-8 w-8 text-slate-300" />
+            </div>
+            <p className="text-slate-400 text-lg font-medium mb-8 max-w-xs mx-auto">
+              {isOwnProfile
+                ? "Your kitchen is empty! Time to share your first culinary masterpiece."
+                : "This chef hasn't posted any secrets yet."}
             </p>
             {isOwnProfile && (
               <Link href="/recipe/create">
-                <Button>Create Your First Recipe</Button>
+                <Button className="rounded-xl px-8 py-6 bg-slate-900 hover:bg-orange-600 shadow-xl transition-all font-bold">
+                  Create Your First Recipe
+                </Button>
               </Link>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {recipesWithLikes.map((recipe) => (
               <RecipeCard key={recipe.id} {...recipe} />
             ))}
           </div>
         )}
-      </div>
+      </section>
     </div>
   )
 }

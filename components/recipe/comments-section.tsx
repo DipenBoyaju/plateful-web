@@ -110,7 +110,7 @@ export function CommentsSection({
       )}
 
       {/* Comments List */}
-      <div className="space-y-6 h-160 overflow-scroll">
+      <div className="space-y-6 h-120 overflow-scroll">
         {comments.length === 0 ? (
           <p className="text-center text-slate-400 py-8">
             No comments yet. Be the first to share your thoughts!

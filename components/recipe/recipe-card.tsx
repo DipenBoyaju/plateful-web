@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Clock, Heart } from 'lucide-react'
+import { Clock, Heart, ArrowRight } from 'lucide-react'
 
 interface RecipeCardProps {
   id: string
@@ -15,9 +15,9 @@ interface RecipeCardProps {
     full_name: string
     avatar_url?: string
   }
-  cook_time: number      // Changed from cookTime to cook_time (database field name)
+  cook_time: number
   difficulty: 'Easy' | 'Medium' | 'Hard'
-  likes_count?: number   // Changed from likes to likes_count (what we return from actions)
+  likes_count?: number
 }
 
 export function RecipeCard({
@@ -26,82 +26,87 @@ export function RecipeCard({
   description,
   image_url,
   profiles,
-  cook_time,              // Use snake_case (matches database)
+  cook_time,
   difficulty,
-  likes_count = 0,        // Default to 0 if not provided
+  likes_count = 0,
 }: RecipeCardProps) {
-  const difficultyColor = {
-    Easy: 'bg-green-100 text-green-800',
-    Medium: 'bg-yellow-100 text-yellow-800',
-    Hard: 'bg-red-100 text-red-800',
+  const difficultyStyles = {
+    Easy: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+    Medium: 'bg-amber-50 text-amber-600 border-amber-100',
+    Hard: 'bg-rose-50 text-rose-600 border-rose-100',
   }
 
   return (
     <Link href={`/recipe/${id}`} className="block group">
-      <Card className="h-full overflow-hidden border-slate-100 bg-white/70 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:shadow-orange-200/50 hover:-translate-y-1">
-        {/* Image Container */}
-        <div className="relative aspect-video w-full overflow-hidden">
+      <Card className="h-full overflow-hidden border-none bg-white transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-2 rounded-[2rem]">
+        {/* IMAGE SECTION */}
+        <div className="relative aspect-[4/3] w-full overflow-hidden">
           <Image
             src={image_url}
             alt={title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
 
-          {/* Cook Time Badge */}
-          <div className="absolute bottom-3 right-3">
-            <div className="flex items-center gap-1.5 bg-black/50 text-white px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
-              <Clock className="h-3 w-3" />
-              {cook_time} min
-            </div>
-          </div>
-
-          {/* Difficulty Badge */}
-          <div className="absolute top-3 left-3">
-            <Badge variant="secondary" className={difficultyColor[difficulty]}>
+          {/* Top Overlay: Difficulty */}
+          <div className="absolute top-4 left-4">
+            <Badge className={`px-3 py-1 border font-bold text-[10px] uppercase tracking-widest rounded-lg backdrop-blur-md shadow-sm ${difficultyStyles[difficulty]}`}>
               {difficulty}
             </Badge>
           </div>
+
+          {/* Bottom Overlay: Cook Time */}
+          <div className="absolute bottom-4 right-4">
+            <div className="flex items-center gap-1.5 bg-slate-900/80 text-white px-3 py-1.5 rounded-xl text-xs font-bold backdrop-blur-md">
+              <Clock className="h-3.5 w-3.5 text-orange-400" />
+              {cook_time}m
+            </div>
+          </div>
         </div>
 
-        <CardContent className="p-5">
-          {/* Author Info */}
-          <div className="flex items-center gap-2 mb-3">
-            <Avatar className="h-6 w-6 border border-slate-200">
-              <AvatarImage src={profiles.avatar_url} />
-              <AvatarFallback className="text-xs">
-                {profiles.username[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-xs font-medium text-slate-500">
-              {profiles.full_name || profiles.username}
-            </span>
+        {/* CONTENT SECTION */}
+        <CardContent className="p-6">
+          {/* Profile & Likes Row */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Avatar className="h-7 w-7 ring-2 ring-slate-50">
+                <AvatarImage src={profiles.avatar_url} />
+                <AvatarFallback className="text-[10px] font-bold bg-orange-100 text-orange-600">
+                  {profiles.username[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                {profiles.full_name || profiles.username}
+              </span>
+            </div>
+
+            {/* Refined Like Indicator: It only "pops" on card hover, but stays subtle */}
+            <div className="flex items-center gap-1.5 text-slate-300 transition-all duration-300 group-hover:text-slate-500">
+              <Heart
+                className="h-4 w-4 transition-all duration-300 group-hover:scale-110 group-hover:text-rose-500"
+                strokeWidth={2.5}
+              />
+              <span className="text-xs font-black">{likes_count}</span>
+            </div>
           </div>
 
-          {/* Title */}
-          <h3 className="font-bold text-xl mb-2 text-slate-800 group-hover:text-orange-600 transition-colors line-clamp-1">
+          <h3 className="font-black text-xl mb-2 text-slate-800 group-hover:text-orange-600 transition-colors line-clamp-1 tracking-tight">
             {title}
           </h3>
 
-          {/* Description */}
-          <p className="text-sm text-slate-600 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed font-medium opacity-80">
             {description}
           </p>
         </CardContent>
 
-        <CardFooter className="px-5 pb-5 pt-0 flex items-center justify-between border-t border-slate-50 mt-auto">
-          {/* Likes */}
-          <div className="flex items-center gap-4 pt-4">
-            <div className="flex items-center gap-1.5 text-slate-500">
-              <Heart className="h-4 w-4" />
-              <span className="text-sm font-medium">{likes_count}</span>
+        {/* FOOTER SECTION */}
+        <CardFooter className="px-6 pb-6 pt-0 mt-auto">
+          <div className="w-full pt-4 border-t border-slate-50 flex items-center justify-between group/btn">
+            <span className="text-sm font-bold text-slate-900">View Recipe</span>
+            <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition-all">
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </div>
-          </div>
-
-          {/* View Recipe Link */}
-          <div className="pt-4 text-orange-600 font-semibold text-sm group-hover:translate-x-1 transition-transform">
-            View Recipe →
           </div>
         </CardFooter>
       </Card>
