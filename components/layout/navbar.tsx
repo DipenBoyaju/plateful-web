@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { getUser, signOut } from '@/actions/auth-actions'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Search } from 'lucide-react';
 
 export async function Navbar() {
   const user = await getUser();
@@ -16,7 +17,10 @@ export async function Navbar() {
 
         <div className="flex items-center gap-4">
           <Link href="/search">
-            <Button variant="ghost">Explore</Button>
+            <Button variant="ghost" size="sm" className="gap-2">
+              <Search className="h-4 w-4" />
+              <span className="hidden md:inline">Search</span>
+            </Button>
           </Link>
           {user ? (
             <>
