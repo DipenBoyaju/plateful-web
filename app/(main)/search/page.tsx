@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useTransition } from 'react'
+import { useState, useEffect, useTransition, Suspense } from 'react'
 import { searchRecipes, searchRecipesByIngredient, searchUsers, getTrendingRecipes, getPopularUsers } from '@/actions/search-actions'
 import { RecipeCard } from '@/components/recipe/recipe-card'
 import { Input } from '@/components/ui/input'
@@ -14,21 +14,37 @@ import { FollowButton } from '@/components/follow/follow-button'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { RecipeCardProps } from '../../../types/recipe';
 
+// --- MAIN PAGE COMPONENT (Suspense Wrapper) ---
 export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-orange-500" />
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
+  )
+}
+
+// --- ACTUAL SEARCH LOGIC ---
+function SearchContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const initialQuery = searchParams.get('q') || ''
 
   const [searchQuery, setSearchQuery] = useState(initialQuery)
   const [recipes, setRecipes] = useState<RecipeCardProps[]>([])
-  const [users, setUsers] = useState<string[]>([])
+
+  // FIXED: Changed string[] to any[] or a proper User interface to fix the mapping error
+  const [users, setUsers] = useState<any[]>([])
   const [trendingRecipes, setTrendingRecipes] = useState<RecipeCardProps[]>([])
-  const [popularUsers, setPopularUsers] = useState<string[]>([])
+  const [popularUsers, setPopularUsers] = useState<any[]>([])
+
   const [isPending, startTransition] = useTransition()
   const [activeTab, setActiveTab] = useState('recipes')
   const [searchType, setSearchType] = useState<'title' | 'ingredient'>('title')
 
-  // Filters
   const [difficulty, setDifficulty] = useState('all')
   const [maxCookTime, setMaxCookTime] = useState<number | undefined>()
 
@@ -79,11 +95,9 @@ export default function SearchPage() {
 
   return (
     <div className="relative min-h-screen pb-20">
-      {/* BACKGROUND DECO */}
-      <div className="absolute top-0 right-0 w-1/3 h-120px bg-linear-30-to-b from-orange-50/50 to-transparent -z-10" />
+      <div className="absolute top-0 right-0 w-1/3 h-[120px] bg-gradient-to-b from-orange-50/50 to-transparent -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 pt-12 md:pt-20">
-        {/* HEADER SECTION */}
         <div className="max-w-4xl mb-12 space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[10px] font-black uppercase tracking-widest">
             <Sparkles className="h-3 w-3" />
@@ -95,7 +109,6 @@ export default function SearchPage() {
           </h1>
         </div>
 
-        {/* MODERN SEARCH BAR */}
         <div className="relative z-10 mb-12">
           <form onSubmit={handleSearchSubmit} className="group relative">
             <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
@@ -123,7 +136,6 @@ export default function SearchPage() {
             </div>
           </form>
 
-          {/* Quick Toggle Pill for Recipe Search Type */}
           {activeTab === 'recipes' && (
             <div className="flex justify-center mt-6">
               <div className="inline-flex p-1 bg-slate-100 rounded-2xl border border-slate-200">
@@ -144,7 +156,6 @@ export default function SearchPage() {
           )}
         </div>
 
-        {/* TABS & FILTERS */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-12">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 border-b border-slate-100 pb-2">
             <TabsList className="bg-transparent h-auto p-0 gap-8">
@@ -162,7 +173,7 @@ export default function SearchPage() {
             {activeTab === 'recipes' && searchType === 'title' && (
               <div className="flex items-center gap-3 animate-in fade-in duration-500">
                 <Select value={difficulty} onValueChange={setDifficulty}>
-                  <SelectTrigger className="w-35px rounded-xl border-slate-100 font-bold bg-slate-50">
+                  <SelectTrigger className="w-35 rounded-xl border-slate-100 font-bold bg-slate-50">
                     <SelectValue placeholder="Difficulty" />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
@@ -181,7 +192,6 @@ export default function SearchPage() {
             )}
           </div>
 
-          {/* TAB CONTENT: RECIPES */}
           <TabsContent value="recipes" className="outline-none">
             {isPending ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 opacity-50">
@@ -196,7 +206,6 @@ export default function SearchPage() {
             )}
           </TabsContent>
 
-          {/* TAB CONTENT: USERS */}
           <TabsContent value="users" className="outline-none">
             {isPending ? (
               <div className="space-y-4 animate-pulse">
@@ -211,7 +220,6 @@ export default function SearchPage() {
             )}
           </TabsContent>
 
-          {/* TAB CONTENT: TRENDING */}
           <TabsContent value="trending" className="outline-none">
             <div className="space-y-16">
               <section>
@@ -241,6 +249,8 @@ export default function SearchPage() {
   )
 }
 
+// --- SUB-COMPONENTS ---
+
 function UserCard({ user }: { user: any }) {
   return (
     <div className="group bg-white p-6 rounded-[2rem] border border-slate-100 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 flex items-center gap-6">
@@ -248,7 +258,7 @@ function UserCard({ user }: { user: any }) {
         <Avatar className="h-20 w-20 ring-4 ring-white shadow-xl">
           <AvatarImage src={user.avatar_url} className="object-cover" />
           <AvatarFallback className="text-2xl font-black bg-orange-100 text-orange-600">
-            {user.username[0].toUpperCase()}
+            {user.username ? user.username[0].toUpperCase() : 'U'}
           </AvatarFallback>
         </Avatar>
         <div className="absolute -bottom-1 -right-1 bg-orange-500 border-2 border-white rounded-full p-1.5 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
@@ -266,8 +276,8 @@ function UserCard({ user }: { user: any }) {
           {user.full_name || 'Home Chef'}
         </p>
         <div className="flex gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
-          <span className="flex items-center gap-1.5"><ChefHat className="h-3 w-3" /> {user.recipe_count} Recipes</span>
-          <span className="flex items-center gap-1.5"><UsersIcon className="h-3 w-3" /> {user.follower_count} Followers</span>
+          <span className="flex items-center gap-1.5"><ChefHat className="h-3 w-3" /> {user.recipe_count || 0} Recipes</span>
+          <span className="flex items-center gap-1.5"><UsersIcon className="h-3 w-3" /> {user.follower_count || 0} Followers</span>
         </div>
       </div>
 
