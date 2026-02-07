@@ -12,6 +12,7 @@ import { Search, Loader2, TrendingUp, Users as UsersIcon, ChefHat, Sparkles, X }
 import Link from 'next/link'
 import { FollowButton } from '@/components/follow/follow-button'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { RecipeCardProps } from '../../../types/recipe';
 
 export default function SearchPage() {
   const router = useRouter()
@@ -19,7 +20,7 @@ export default function SearchPage() {
   const initialQuery = searchParams.get('q') || ''
 
   const [searchQuery, setSearchQuery] = useState(initialQuery)
-  const [recipes, setRecipes] = useState<string[]>([])
+  const [recipes, setRecipes] = useState<RecipeCardProps[]>([])
   const [users, setUsers] = useState<string[]>([])
   const [trendingRecipes, setTrendingRecipes] = useState<string[]>([])
   const [popularUsers, setPopularUsers] = useState<string[]>([])

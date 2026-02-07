@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { UserPlus, UserCheck } from 'lucide-react'
 import { cn } from "@/lib/utils"
 
-interface FollowButtonProps {
+export interface FollowButtonProps {
   userId: string
   initialIsFollowing: boolean
   isAuthenticated: boolean

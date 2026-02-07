@@ -40,7 +40,7 @@ export function RecipeCard({
     <Link href={`/recipe/${id}`} className="block group">
       <Card className="h-full overflow-hidden border-none bg-white transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-2 rounded-[2rem]">
         {/* IMAGE SECTION */}
-        <div className="relative aspect-[4/3] w-full overflow-hidden">
+        <div className="relative aspect-4/3 w-full overflow-hidden">
           <Image
             src={image_url}
             alt={title}
