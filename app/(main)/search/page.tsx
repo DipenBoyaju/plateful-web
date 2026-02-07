@@ -22,7 +22,7 @@ export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState(initialQuery)
   const [recipes, setRecipes] = useState<RecipeCardProps[]>([])
   const [users, setUsers] = useState<string[]>([])
-  const [trendingRecipes, setTrendingRecipes] = useState<string[]>([])
+  const [trendingRecipes, setTrendingRecipes] = useState<RecipeCardProps[]>([])
   const [popularUsers, setPopularUsers] = useState<string[]>([])
   const [isPending, startTransition] = useTransition()
   const [activeTab, setActiveTab] = useState('recipes')
