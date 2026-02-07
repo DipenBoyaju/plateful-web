@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Search, Loader2, TrendingUp, Users as UsersIcon, ChefHat, Sparkles, Filter, X, ArrowRight } from 'lucide-react'
+import { Search, Loader2, TrendingUp, Users as UsersIcon, ChefHat, Sparkles, X } from 'lucide-react'
 import Link from 'next/link'
 import { FollowButton } from '@/components/follow/follow-button'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -19,10 +19,10 @@ export default function SearchPage() {
   const initialQuery = searchParams.get('q') || ''
 
   const [searchQuery, setSearchQuery] = useState(initialQuery)
-  const [recipes, setRecipes] = useState<any[]>([])
-  const [users, setUsers] = useState<any[]>([])
-  const [trendingRecipes, setTrendingRecipes] = useState<any[]>([])
-  const [popularUsers, setPopularUsers] = useState<any[]>([])
+  const [recipes, setRecipes] = useState<string[]>([])
+  const [users, setUsers] = useState<string[]>([])
+  const [trendingRecipes, setTrendingRecipes] = useState<string[]>([])
+  const [popularUsers, setPopularUsers] = useState<string[]>([])
   const [isPending, startTransition] = useTransition()
   const [activeTab, setActiveTab] = useState('recipes')
   const [searchType, setSearchType] = useState<'title' | 'ingredient'>('title')

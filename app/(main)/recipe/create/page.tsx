@@ -274,7 +274,7 @@ export default function CreateRecipePage() {
               <Button type="button" variant="ghost" onClick={() => router.back()} className="h-16 flex-1 rounded-[1.5rem] font-black text-slate-500 text-lg">
                 Save Draft
               </Button>
-              <Button type="submit" disabled={isSubmitting} className="h-16 flex-[2] rounded-[1.5rem] bg-orange-500 hover:bg-orange-600 font-black text-xl shadow-xl shadow-orange-200 transition-all active:scale-[0.98]">
+              <Button type="submit" disabled={isSubmitting} className="h-16 flex-2 rounded-[1.5rem] bg-orange-500 hover:bg-orange-600 font-black text-xl shadow-xl shadow-orange-200 transition-all active:scale-[0.98]">
                 {isSubmitting ? <><Loader2 className="mr-3 h-6 w-6 animate-spin" /> Publishing...</> : 'Publish Recipe'}
               </Button>
             </div>
