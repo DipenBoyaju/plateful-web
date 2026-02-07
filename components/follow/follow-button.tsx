@@ -5,6 +5,7 @@ import { toggleFollow } from '@/actions/follow-actions'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { UserPlus, UserCheck } from 'lucide-react'
+import { cn } from "@/lib/utils"
 
 interface FollowButtonProps {
   userId: string
@@ -12,6 +13,7 @@ interface FollowButtonProps {
   isAuthenticated: boolean
   variant?: 'default' | 'ghost' | 'outline'
   size?: 'default' | 'sm' | 'lg'
+  className?: string
 }
 
 export function FollowButton({
@@ -19,7 +21,8 @@ export function FollowButton({
   initialIsFollowing,
   isAuthenticated,
   variant = 'default',
-  size = 'default'
+  size = 'default',
+  className
 }: FollowButtonProps) {
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing)
   const [isPending, startTransition] = useTransition()
@@ -52,7 +55,10 @@ export function FollowButton({
       size={size}
       onClick={handleFollow}
       disabled={isPending}
-      className={isFollowing ? 'border-slate-300' : ''}
+      className={cn(
+        isFollowing ? 'border-slate-300' : '',
+        className
+      )}
     >
       {isFollowing ? (
         <>
